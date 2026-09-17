@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestra Boda</title>
+    <style>
+    /* -------------------------------------------------------------
+       1. CARGA DE FUENTES LOCALES desde la carpeta /fonts/
+       (Reemplaza 'TuFuenteElegante.ttf' por el nombre real de tu archivo)
+       ------------------------------------------------------------- */
+    @font-face {
+        font-family: 'MiFuenteElegante'; 
+        src: url('fonts/adelia.ttf') format('truetype'); /* Usa 'opentype' si es .otf */
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'MiFuenteBase';
+        src: url('fonts/Scaver-Regular.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        font-family: 'MiFuenteBase', sans-serif; /* Tu fuente secundaria/limpia aplicada a toda la web */
+        background-color: #fcfbf9;
+        overflow-x: hidden;
+    }
+    .section {
+        position: relative;
+        width: 100%;
+        line-height: 0;
+    }
+    .section img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+    
+    /* -------------------------------------------------------------
+       2. AJUSTE DE POSICIÓN EXACTA - SECCIÓN 2
+       ------------------------------------------------------------- */
+    .overlay-s2 {
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 600px;
+        text-align: center;
+        line-height: normal;
+        top: 23%; /* Cambia este % para subir o bajar el bloque en la Sec 2 */
+    }
+
+    .overlay-s3 {
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 600px;
+        text-align: center;
+        line-height: normal;
+        top: 83%; /* Cambia este % para subir o bajar el bloque en la Sec 2 */
+    }
+
+    .guest-name {
+    font-family: 'MiFuenteElegante', serif;
+    
+    /* 🔴 Reemplaza el 'rem' por 'vw'. 
+       Ejemplo: 6vw significa que la letra ocupará el 6% del ancho de la pantalla */
+    font-size: 5.0vw; 
+
+    color: #4a554a; 
+    margin-bottom: 4vw; /* También puedes usar vw en los márgenes para mantener proporciones */
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.6);
+}
+
+    /* -------------------------------------------------------------
+       AJUSTE DE CONTADOR: SIN FONDO Y CON LÍNEAS VERTICALES
+       ------------------------------------------------------------- */
+    .countdown {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0; /* Eliminamos el espacio directo para controlar la separación con las líneas */
+    }
+    
+    .countdown-item {
+        background: transparent; /* 🚫 Quitamos el fondo de las casillas */
+        padding: 0.5rem 1.5rem; /* Ajusta el espacio a los lados de la línea vertical */
+        min-width: 90px;
+        box-shadow: none; /* Quitamos sombras anteriores */
+        
+        /* 👇 Agrega la línea vertical a la derecha de cada bloque */
+        border-right: 1px solid rgba(74, 85, 74, 0.4); /* Cambia el color por el de tu paleta */
+    }
+
+    /* 👇 Selecciona la última casilla (Segundos) y le quita la línea vertical */
+    .countdown-item:last-child {
+        border-right: none;
+    }
+
+    .countdown-number {
+        font-size: 2.2rem; /* Ajusta el tamaño numérico */
+        font-weight: 600;
+        color: #4a554a; /* Color de tus números */
+        display: block;
+        margin-bottom: 0.2rem;
+    }
+
+    .countdown-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #777777; /* Color de las etiquetas (Días, Horas, Min, Seg) */
+    }
+    
+    /* Adaptación para pantallas pequeñas (Celulares) */
+    @media (max-width: 480px) {
+        .countdown-item {
+            padding: 0.3rem 0.8rem;
+            min-width: 70px;
+        }
+        .countdown-number {
+            font-size: 1.6rem;
+        }
+        .countdown-label {
+            font-size: 0.6rem;
+        }
+    }
+    
+        /* -------------------------------------------------------------
+       3. NUEVO ESTILO SECCIÓN 9 (FORMULARIO RSVP INTEGRADO)
+       ------------------------------------------------------------- */
+    .section-form-rsvp {
+        width: 100%;
+        /* 👇 Ajusta el color de fondo para que combine con la paleta de tu boda */
+        background-color: #fff; 
+        padding: 5rem 1.5rem; /* Espaciado arriba y abajo del formulario */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        line-height: normal;
+    }
+    
+    .form-container-rsvp {
+        width: 100%;
+        max-width: 450px;
+        text-align: center;
+    }
+
+    .form-container-rsvp h2 {
+        font-family: 'MiFuenteElegante', serif;
+        font-size: 2.5rem;
+        color: #333333;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-container-rsvp p {
+        font-size: 0.95rem;
+        color: #777;
+        margin-bottom: 2.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+        text-align: left;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #555;
+    }
+    .form-group input, .form-group select {
+        width: 100%;
+        padding: 0.85rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: 'MiFuenteBase', sans-serif;
+        font-size: 0.95rem;
+        background-color: #fff;
+        color: #333;
+        transition: border-color 0.3s;
+    }
+    .form-group input:focus, .form-group select:focus {
+        outline: none;
+        border-color: #8da399; 
+    }
+    .btn-submit {
+        width: 100%;
+        padding: 1rem;
+        font-family: 'MiFuenteBase', sans-serif;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        background-color: #a4aa84; 
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: background 0.3s;
+        margin-top: 0.5rem;
+    }
+    .btn-submit:hover {
+        background-color: #748a80;
+    }
+    #form-message {
+        margin-top: 1.2rem;
+        text-align: center;
+        font-size: 0.95rem;
+        font-weight: bold;
+    }
+
+    /* Ajuste para pantallas pequeñas */
+    @media (max-width: 480px) {
+        .section-form-rsvp {
+            padding: 4rem 1rem;
+        }
+        .form-container-rsvp h2 {
+            font-size: 2rem;
+        }
+    }
+
+    /* -------------------------------------------------------------
+       4. ADAPTACIÓN PARA TELÉFONOS (Responsive)
+       ------------------------------------------------------------- */
+    @media (max-width: 480px) {
+        .guest-name {
+            font-size: 2.2rem; /* Achica un poco el tamaño en móviles para evitar saltos de línea bruscos */
+            margin-bottom: 1.5rem;
+        }
+        .countdown-item {
+            min-width: 60px;
+            padding: 0.5rem;
+        }
+        .countdown-number {
+            font-size: 1.4rem;
+        }
+        .countdown-label {
+            font-size: 0.6rem;
+        }
+    }
+
+    /* -------------------------------------------------------------
+       5. BOTÓN SUPERPUESTO EN SECCIÓN 4 (GOOGLE MAPS)
+       ------------------------------------------------------------- */
+    .overlay-s4 {
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: auto;
+        text-align: center;
+        line-height: normal;
+
+        /* 👇 MODIFICA ESTE PORCENTAJE para subir o bajar el botón en la Sección 4 */
+        top: 83.5%; 
+    }
+
+    .btn-maps {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.1rem;
+        
+        /* Estética del botón */
+        background: transparent; /* Fondo blanco con ligera transparencia */
+        color: transparent; /* Reemplaza por el color de texto de tu paleta */
+        border: transparent;
+        padding: 0.2rem 0.2rem;
+        border-radius: 50px; /* Bordes completamente redondeados */
+        
+        /* Tipografía */
+        font-family: 'MiFuenteBase', sans-serif;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        
+        /* Efectos visuales */
+        box-shadow: transparent;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    /* Efecto al pasar el cursor (Hover) */
+    .btn-maps:hover {
+        background: transparent; /* Se invierten los colores de forma elegante */
+        color: transparent;
+        box-shadow: transparent;
+        transform: translateY(-2px); /* Pequeño brinco hacia arriba */
+    }
+
+    .btn-maps-icon {
+        font-size: 1.2rem;
+    }
+
+    /* Adaptación para pantallas móviles */
+    @media (max-width: 480px) {
+        .btn-maps {
+            padding: 0.6rem 1.3rem;
+            font-size: 0.85rem;
+        }
+        .overlay-s4 {
+            /* 👇 Ajuste opcional de altura exclusivo para celulares si es necesario */
+            top: 65%; 
+        }
+    }
+</style>
+</head>
+<body>
+
+    <!-- Sección 1 -->
+    <div class="section">
+        <img src="img/seccion1.jpg" alt="Portada de Boda">
+    </div>
+
+    <!-- Sección 2: Con Nombre Dinámico y Cuenta Regresiva -->
+    <div class="section">
+        <img src="img/seccion2.jpg" alt="Invitación Especial">
+        <div class="overlay-s2">
+            <div class="guest-name" id="guest-name">Cargando invitado...</div>
+        </div>
+        <div class="overlay-s3">
+            <div class="countdown">
+                <div class="countdown-item">
+                    <span class="countdown-number" id="days">00</span>
+                    <span class="countdown-label">Días</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="hours">00</span>
+                    <span class="countdown-label">Horas</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="minutes">00</span>
+                    <span class="countdown-label">Min</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="seconds">00</span>
+                    <span class="countdown-label">Seg</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección 3 -->
+    <div class="section"><img src="img/seccion3.jpg" alt="Sección 3"></div>
+    <!-- Sección 4: Ubicación con Botón Superpuesto -->
+    <div class="section">
+        <img src="img/seccion4.jpg" alt="Lugar del Evento">
+        <div class="overlay-s4">
+            <!-- REEMPLAZA EL LINK DE ABAJO por el enlace compartido de tu ubicación de Google Maps -->
+            <a href="https://maps.app.goo.gl/WB5CU2McH1Fu946a7" target="_blank" class="btn-maps">
+                <span class="btn-maps-icon">📍</span> Ver Ubicación
+            </a>
+        </div>
+    </div>
+    <!-- Sección 5 -->
+    <div class="section"><img src="img/seccion5.jpg" alt="Sección 5"></div>
+    <!-- Sección 6 -->
+    <div class="section"><img src="img/seccion6.jpg" alt="Sección 6"></div>
+    <!-- Sección 7 -->
+    <div class="section"><img src="img/seccion7.jpg" alt="Sección 7"></div>
+    <!-- Sección 8 -->
+    <div class="section"><img src="img/seccion8.jpg" alt="Sección 8"></div>
+
+    <!-- Sección 9: Formulario RSVP -->
+    <div class="section-form-rsvp">
+        <div class="form-container-rsvp">            
+            <form id="rsvp-form">
+                <div class="form-group">
+                    <label for="form-name">Nombre Completo:</label>
+                    <input type="text" id="form-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="form-attendance">¿Asistirás?</label>
+                    <select id="form-attendance" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="Sí, asistiré">Sí, asistiré con gusto</option>
+                        <option value="No podré asistir">Lo siento, no podré asistir</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="form-diet">Restricciones alimentarias / Notas:</label>
+                    <input type="text" id="form-diet" placeholder="Ej. Alergias, vegetariano...">
+                </div>
+                <button type="submit" class="btn-submit">Enviar Confirmación</button>
+                <div id="form-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 1. URL DINÁMICA PARA NOMBRE DEL INVITADO
+        // Ejemplo de uso: https://github.io
+        const urlParams = new URLSearchParams(window.location.search);
+        const guestName = urlParams.get('invitado');
+        const nameElement = document.getElementById('guest-name');
+        
+        if (guestName) {
+            nameElement.textContent = decodeURIComponent(guestName);
+        } else {
+            nameElement.textContent = "¡Estás Invitado!"; // Texto alternativo si no viene parámetro
+        }
+
+        // 2. CUENTA REGRESIVA (8 de Noviembre de este año)
+// Sintaxis segura: (Año, Mes-1, Día, Hora, Minuto) -> Noviembre es el mes 10 en JavaScript
+const weddingDate = new Date(2026, 10, 8, 17, 0, 0).getTime(); 
+
+const countdownInterval = setInterval(function() {
+    const now = new Date().getTime();
+    const distance = weddingDate - now;
+
+    // Si la fecha ya pasó o hay un error de zona horaria local
+    if (distance < 0) {
+        clearInterval(countdownInterval);
+        document.getElementById('days').textContent = "00";
+        document.getElementById('hours').textContent = "00";
+        document.getElementById('minutes').textContent = "00";
+        document.getElementById('seconds').textContent = "00";
+        // Opcional: puedes activar un mensaje quitando las barras de la línea de abajo
+        // document.querySelector('.countdown').innerHTML = "<h3>¡Llegó el gran día!</h3>";
+        return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // Inyectar los valores asegurando las dos cifras
+    if(document.getElementById('days')) {
+        document.getElementById('days').textContent = String(days).padStart(2, '0');
+        document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+        document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+    }
+}, 1000);
+
+        // 3. ENVÍO DE FORMULARIO A SHEETDB.IO
+        const form = document.getElementById('rsvp-form');
+        const formMessage = document.getElementById('form-message');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            formMessage.style.color = '#333';
+            formMessage.textContent = 'Enviando confirmación...';
+
+            // !!! REEMPLAZA LA URL DE ABAJO CON TU API URL DE SHEETDB.IO !!!
+            const sheetdb_url = 'https://sheetdb.io'; 
+
+            fetch(sheetdb_url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    data: [
+                        {
+                            'Nombre': document.getElementById('form-name').value,
+                            'Asistencia': document.getElementById('form-attendance').value,
+                            'Notas': document.getElementById('form-diet').value,
+                            'Fecha_Registro': new Date().toLocaleString('es-CO')
+                        }
+                    ]
+                })
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if(data.created) {
+                    formMessage.style.color = 'green';
+                    formMessage.textContent = '¡Tu confirmación ha sido enviada con éxito!';
+                    form.reset();
+                } else {
+                    formMessage.style.color = 'red';
+                    formMessage.textContent = 'Hubo un inconveniente. Inténtalo de nuevo.';
+                }
+            })
+            .catch((error) => {
+                formMessage.style.color = 'red';
+                formMessage.textContent = 'Error al enviar de forma local.';
+                console.error('Error:', error);
+            });
+        });
+</script>
+</body>
+</html>
