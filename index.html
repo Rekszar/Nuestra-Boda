@@ -43,6 +43,107 @@
         height: auto;
         display: block;
     }
+
+        /* Estilos de la Portada */
+.portada {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: #fbeabc; /* Color crema/blanco roto elegante */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Por encima de absolutamente todo */
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+  text-align: center;
+  font-family: 'MiFuenteBase', serif, sans-serif; /* Tipografía elegante */
+}
+
+.contenido-portada {
+  padding: 20px;
+}
+
+.portada h1 {
+  font-size: 3rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.pregunta-musica {
+  font-size: 1.2rem;
+  margin-top: 30px;
+  color: #333;
+}
+
+.botones-portada {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.btn-entrar {
+  padding: 12px 25px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-entrar.si {
+  background-color: #a4aa84;
+  color: white;
+}
+
+.btn-entrar.no {
+  background-color: #e0e0e0;
+  color: #555;
+}
+
+.btn-entrar:hover {
+  transform: scale(1.05);
+}
+
+/* Botón Flotante de Música */
+.boton-musica {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background-color: #a4aa84;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 24px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+
+/* Animación de rotación para el botón flotante */
+@keyframes rotar {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.sonando {
+  animation: rotar 4s linear infinite;
+}
+
+/* Clase para ocultar la portada de manera fluida */
+.ocultar-portada {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
     
     /* -------------------------------------------------------------
        2. AJUSTE DE POSICIÓN EXACTA - SECCIÓN 2
@@ -326,6 +427,25 @@
 </head>
 <body>
 
+    <!-- PANTALLA DE PORTADA / BIENVENIDA -->
+<div id="portada-boda" class="portada">
+  <div class="contenido-portada">
+    <p class="pregunta-musica">¿Deseas activar la música de fondo?</p>
+    <div class="botones-portada">
+      <button onclick="entrarInvitacion(true)" class="btn-entrar si">Sí, con música ▶</button>
+      <button onclick="entrarInvitacion(false)" class="btn-entrar no">No, en silencio</button>
+    </div>
+  </div>
+</div>
+
+<!-- ELEMENTO DE AUDIO OCULTO -->
+<audio id="musica-boda" src="audio/musica.mp3" loop></audio>
+
+<!-- BOTÓN FLOTANTE (Para pausar/reproducir después) -->
+<button id="btn-musica" class="boton-musica" onclick="controlarMusica()">
+  <span id="icono-musica">❙❙</span>
+</button>
+
     <!-- Sección 1 -->
     <div class="section">
         <img src="img/seccion1.jpg" alt="Portada de Boda">
@@ -407,6 +527,45 @@
     </div>
 
     <script>
+const musica = document.getElementById('musica-boda');
+  const botonFlotante = document.getElementById('btn-musica');
+  const iconoFlotante = document.getElementById('icono-musica');
+  const portada = document.getElementById('portada-boda');
+
+  // Función principal al hacer clic en los botones de la portada
+  function entrarInvitacion(conMusica) {
+    // 1. Ocultar la portada de forma fluida
+    portada.classList.add('ocultar-portada');
+
+    // 2. Procesar la decisión del invitado
+    if (conMusica) {
+      musica.play().then(() => {
+        iconoFlotante.innerText = "❙❙";
+        botonFlotante.classList.add('sonando');
+      }).catch(error => {
+        console.log("Error al reproducir:", error);
+      });
+    } else {
+      // Si elige NO, la música se queda pausada y cambiamos el icono flotante a nota musical
+      musica.pause();
+      iconoFlotante.innerText = "▶";
+      botonFlotante.classList.remove('sonando');
+    }
+  }
+
+  // Función para el botón flotante (por si quieren pausar o activar la música después)
+  function controlarMusica() {
+    if (musica.paused) {
+      musica.play();
+      iconoFlotante.innerText = "❙❙";
+      botonFlotante.classList.add('sonando');
+    } else {
+      musica.pause();
+      iconoFlotante.innerText = "▶";
+      botonFlotante.classList.remove('sonando');
+    }
+  }
+        
 document.addEventListener("DOMContentLoaded", function() {
     // =============================================================
     // 1. URL DINÁMICA PARA NOMBRE DEL INVITADO CON AUTO-AJUSTE REAL
