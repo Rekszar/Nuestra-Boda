@@ -51,8 +51,12 @@
         position: absolute;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 85%; /* Dejamos un margen del 15% seguro a los lados de la pantalla */
-        max-width: 700px;
+        
+        /* 👇 Declaramos este bloque como contenedor para medir su ancho en tiempo real */
+        container-type: inline-size; 
+        
+        width: 90%;
+        max-width: 600px;
         text-align: center;
         line-height: normal;
         top: 23%; 
@@ -69,16 +73,24 @@
         top: 83%; /* Cambia este % para subir o bajar el bloque en la Sec 2 */
     }
 
-    .guest-name {
+     .guest-name {
         font-family: 'MiFuenteElegante', serif;
-        display: inline-block;
-        white-space: nowrap; /* Mantiene el texto en una sola línea */
-        color: #4a554a; 
-        margin-bottom: 2.5rem; 
-        text-shadow: 1px 1px 2px rgba(255,255,255,0.6);
         
-        /* Tamaño inicial base para nombres normales */
-        font-size: 3.5rem; 
+        /* 👇 IMPIDE que el nombre salte a una segunda línea */
+        white-space: nowrap; 
+        
+        /* 👇 HACE FLUIDO EL TAMAÑO basándose en el espacio del contenedor.
+           - Mínimo tamaño: 1.8rem (para nombres gigantes en celulares pequeños)
+           - Tamaño fluido: 12cqi (12% del ancho disponible de su caja)
+           - Máximo tamaño: 3.5rem (para nombres normales o cortos) */
+        font-size: clamp(0.8rem, 10cqi, 1.5rem); 
+        
+        /* 👇 Controla el desbordamiento si el nombre es absurdamente largo */
+        overflow: hidden;
+        text-overflow: ellipsis; 
+
+        color: #4a554a; 
+        margin-bottom: 2.5rem;
     }
 
     /* -------------------------------------------------------------
@@ -263,7 +275,7 @@
         line-height: normal;
 
         /* 👇 MODIFICA ESTE PORCENTAJE para subir o bajar el botón en la Sección 4 */
-        top: 90%; 
+        top: 83.5%; 
     }
 
     .btn-maps {
@@ -400,38 +412,16 @@
     </div>
 
     <script>
-        / =============================================================
-        // 1. URL DINÁMICA PARA NOMBRE DEL INVITADO CON AUTO-AJUSTE
-        // =============================================================
+        // 1. URL DINÁMICA PARA NOMBRE DEL INVITADO
+        // Ejemplo de uso: https://github.io
         const urlParams = new URLSearchParams(window.location.search);
         const guestName = urlParams.get('invitado');
         const nameElement = document.getElementById('guest-name');
         
-        if (nameElement) {
-            // Asignar el nombre
-            if (guestName) {
-                nameElement.textContent = decodeURIComponent(guestName);
-            } else {
-                nameElement.textContent = "¡Estás Invitado!"; 
-            }
-
-            // Función matemática para encoger la letra si desborda la caja
-            const ajustarTamañoTexto = () => {
-                const contenedor = nameElement.parentElement;
-                let tamañoActual = parseFloat(window.getComputedStyle(nameElement).fontSize);
-                
-                // Si el texto es más ancho que su contenedor, reduce de a 1px hasta que quepa
-                while (nameElement.scrollWidth > contenedor.clientWidth && tamañoActual > 12) {
-                    tamañoActual -= 1;
-                    nameElement.style.fontSize = tamañoActual + 'px';
-                }
-            };
-
-            // Ejecutar el ajuste al cargar y al cambiar el tamaño de la pantalla (girar el móvil)
-            window.addEventListener('load', ajustarTamañoTexto);
-            window.addEventListener('resize', ajustarTamañoTexto);
-            // Ejecución inmediata por seguridad
-            setTimeout(ajustarTamañoTexto, 50);
+        if (guestName) {
+            nameElement.textContent = decodeURIComponent(guestName);
+        } else {
+            nameElement.textContent = "¡Estás Invitado!"; // Texto alternativo si no viene parámetro
         }
 
         // 2. CUENTA REGRESIVA (8 de Noviembre de este año)
