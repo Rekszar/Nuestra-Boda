@@ -407,62 +407,98 @@
     </div>
 
     <script>
-        // 1. URL DINÁMICA PARA NOMBRE DEL INVITADO
-        // Ejemplo de uso: https://github.io
-        const urlParams = new URLSearchParams(window.location.search);
-        const guestName = urlParams.get('invitado');
-        const nameElement = document.getElementById('guest-name');
-        
+document.addEventListener("DOMContentLoaded", function() {
+    // =============================================================
+    // 1. URL DINÁMICA PARA NOMBRE DEL INVITADO CON AUTO-AJUSTE REAL
+    // =============================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const guestName = urlParams.get('invitado');
+    const nameElement = document.getElementById('guest-name');
+    
+    if (nameElement) {
+        // Asignamos el nombre de inmediato
         if (guestName) {
             nameElement.textContent = decodeURIComponent(guestName);
         } else {
-            nameElement.textContent = "¡Estás Invitado!"; // Texto alternativo si no viene parámetro
+            nameElement.textContent = "¡Estás Invitado!"; 
         }
 
-        // 2. CUENTA REGRESIVA (8 de Noviembre de este año)
-// Sintaxis segura: (Año, Mes-1, Día, Hora, Minuto) -> Noviembre es el mes 10 en JavaScript
-const weddingDate = new Date(2026, 10, 8, 17, 0, 0).getTime(); 
+        // Función matemática exacta de reducción píxel por píxel
+        const ajustarTamañoTexto = () => {
+            const contenedor = nameElement.parentElement;
+            if (!contenedor) return;
+            
+            // Forzar reseteo al tamaño máximo inicial antes de calcular
+            nameElement.style.fontSize = '3.5rem';
+            
+            let tamañoActual = parseFloat(window.getComputedStyle(nameElement).fontSize);
+            let anchoContenedor = contenedor.clientWidth;
 
-const countdownInterval = setInterval(function() {
-    const now = new Date().getTime();
-    const distance = weddingDate - now;
+            // Bucle seguro: reduce la fuente hasta que el texto quepa en el ancho disponible
+            while (nameElement.scrollWidth > anchoContenedor && tamañoActual > 12) {
+                tamañoActual -= 1;
+                nameElement.style.fontSize = tamañoActual + 'px';
+            }
+        };
 
-    // Si la fecha ya pasó o hay un error de zona horaria local
-    if (distance < 0) {
-        clearInterval(countdownInterval);
-        document.getElementById('days').textContent = "00";
-        document.getElementById('hours').textContent = "00";
-        document.getElementById('minutes').textContent = "00";
-        document.getElementById('seconds').textContent = "00";
-        // Opcional: puedes activar un mensaje quitando las barras de la línea de abajo
-        // document.querySelector('.countdown').innerHTML = "<h3>¡Llegó el gran día!</h3>";
-        return;
+        // El secreto: Observador que detecta el tamaño real apenas se renderiza la web
+        const observador = new ResizeObserver(() => {
+            ajustarTamañoTexto();
+        });
+        observador.observe(nameElement.parentElement);
+
+        // Disparadores de respaldo por si las fuentes locales tardan en descargar
+        window.addEventListener('load', ajustarTamañoTexto);
+        window.addEventListener('resize', ajustarTamañoTexto);
+        setTimeout(ajustarTamañoTexto, 100);
     }
 
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    // =============================================================
+    // 2. CUENTA REGRESIVA UNIVERSAL (8 de Noviembre de 2026)
+    // =============================================================
+    const weddingDate = new Date(2026, 10, 8, 17, 0, 0).getTime(); 
 
-    // Inyectar los valores asegurando las dos cifras
-    if(document.getElementById('days')) {
-        document.getElementById('days').textContent = String(days).padStart(2, '0');
-        document.getElementById('hours').textContent = String(hours).padStart(2, '0');
-        document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-        document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
-    }
-}, 1000);
+    const countdownInterval = setInterval(function() {
+        const now = new Date().getTime();
+        const distance = weddingDate - now;
 
-        // 3. ENVÍO DE FORMULARIO A SHEETDB.IO
-        const form = document.getElementById('rsvp-form');
-        const formMessage = document.getElementById('form-message');
+        if (distance < 0) {
+            clearInterval(countdownInterval);
+            if(document.getElementById('days')) {
+                document.getElementById('days').textContent = "00";
+                document.getElementById('hours').textContent = "00";
+                document.getElementById('minutes').textContent = "00";
+                document.getElementById('seconds').textContent = "00";
+            }
+            return;
+        }
 
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        if (document.getElementById('days')) {
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+        }
+    }, 1000);
+
+    // =============================================================
+    // 3. ENVÍO DE FORMULARIO A SHEETDB.IO
+    // =============================================================
+    const form = document.getElementById('rsvp-form');
+    const formMessage = document.getElementById('form-message');
+
+    if (form) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             formMessage.style.color = '#333';
             formMessage.textContent = 'Enviando confirmación...';
 
-            // !!! REEMPLAZA LA URL DE ABAJO CON TU API URL DE SHEETDB.IO !!!
+            // REEMPLAZA ESTA URL CON TU API URL REAL DE SHEETDB.IO AL SUBIRLO
             const sheetdb_url = 'https://sheetdb.io'; 
 
             fetch(sheetdb_url, {
@@ -499,6 +535,8 @@ const countdownInterval = setInterval(function() {
                 console.error('Error:', error);
             });
         });
+    }
+});
 </script>
 </body>
 </html>
